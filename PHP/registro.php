@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["usuario_id"] = $pdo->lastInsertId();  
         $_SESSION["usuario_email"] = $email;
 
-        header("Location: http://localhost/bruno/PetCareTCC/index.php");
+        header("Location: http://localhost/bruno/TCCPetCareAtualizado/index.php");
         exit();
     } else {
         echo "Erro ao registrar: ";

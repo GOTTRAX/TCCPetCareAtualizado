@@ -23,7 +23,7 @@ $perfil_active          = (strpos($current_path, 'perfil.php') !== false) ? 'act
 $calendario_active      = (strpos($current_path, 'calendario.php') !== false) ? 'active' : '';
 $equipe_active          = (strpos($current_path, 'equipe.php') !== false) ? 'active' : '';
 $relatorios_active      = (strpos($current_path, 'relatorios') !== false) ? 'active' : '';
-$configuracoes_active = (strpos($current_path, 'config.php') !== false) ? 'active' : '';
+$configuracoes_active   = (strpos($current_path, 'config.php') !== false) ? 'active' : '';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">

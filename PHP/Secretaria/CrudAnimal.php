@@ -95,6 +95,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'detalhes' && isset($_GET['id'])) 
         $idade = $nascimento->diff($hoje)->y . " ano(s)";
     }
     ?>
+    
     <h4>Informações do Animal</h4>
     <div class="row">
         <div class="col-md-4">
@@ -261,7 +262,8 @@ include 'header.php';
         padding: 0 16px;
         margin-bottom: 30px;
     }
-/*ate aq */
+
+    /*ate aq */
     .sidebar-logo {
         color: white;
         font-size: 28px;
@@ -708,7 +710,7 @@ include 'header.php';
         <tr>
             <form method="POST">
                 <td>
-                    <img src="<?= $animal['foto'] ?: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60' ?>"
+                    <img src="<?= $animal['foto'] ?: 'PHP/uploads/pets/' ?>"
                         class="animal-img" alt="<?= htmlspecialchars($animal['nome']) ?>">
                 </td>
                 <td><?= (int) $animal['id'] ?></td>

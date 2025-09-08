@@ -18,10 +18,11 @@ if ($tipo === 'Cliente') {
     $animais = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Buscar serviços em vez de veterinários - REMOVIDA A CLAUSULA WHERE ativo = 1
-$servicos = [];
-$stmt = $pdo->query("SELECT id, nome, preco_normal, preco_feriado FROM Servicos ORDER BY nome");
-$servicos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Buscar veterinários
+$veterinarios = [];
+$stmt = $pdo->prepare("SELECT id, nome FROM Equipe WHERE profissao = :profissao");
+$stmt->execute([':profissao' => 'Vet']);
+$veterinarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar horários de funcionamento da clínica
 $horarios_clinica = [];
@@ -94,6 +95,7 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
     
     return $horarios_disponiveis;
 }
+include 'header.php';
 ?>
 
 <!DOCTYPE html>
@@ -440,12 +442,6 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
             margin-top: 10px;
         }
 
-        .preco-info {
-            font-size: 12px;
-            color: var(--gray);
-            margin-top: 4px;
-        }
-
         @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 1fr;
@@ -492,7 +488,7 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
                                     <div class="animal-card" data-id="<?= $animal['id'] ?>">
                                         <div class="animal-image">
                                             <?php if (!empty($animal['foto'])): ?>
-                                                <img src="../uploads/pets/<?= htmlspecialchars($animal['foto']) ?>" alt="<?= htmlspecialchars($animal['nome']) ?>">
+                                                <img src="<?= htmlspecialchars($animal['foto']) ?>" alt="<?= htmlspecialchars($animal['nome']) ?>">
                                             <?php else: ?>
                                                 <i class="fas fa-paw"></i>
                                             <?php endif; ?>
@@ -505,7 +501,7 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
                             <div class="no-animals">
                                 <i class="fas fa-exclamation-circle"></i>
                                 <p>Você não possui animais cadastrados.</p>
-                                <a href="../Cliente/perfil.php" class="btn">
+                                <a href="perfil.php" class="btn">
                                     <i class="fas fa-plus"></i> Cadastrar Animal
                                 </a>
                             </div>
@@ -516,27 +512,14 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
                 <div class="card" id="formulario-agendamento">
                     <div class="card-header">
                         <i class="fas fa-calendar-plus"></i>
-                        <span>Agendar Serviço</span>
+                        <span>Agendar Consulta</span>
                     </div>
                     <div class="card-body">
                         <form action="salvar_agendamento.php" method="POST">
                             <input type="hidden" name="animal_id" id="animal_selecionado" required>
                             
                             <div class="form-group">
-                                <label for="servico_id"><i class="fas fa-concierge-bell"></i> Serviço:</label>
-                                <select name="servico_id" id="servico_id" class="form-control" required>
-                                    <option value="">Selecione o serviço</option>
-                                    <?php foreach ($servicos as $servico): ?>
-                                        <option value="<?= $servico['id'] ?>" data-preco-normal="<?= $servico['preco_normal'] ?>" data-preco-feriado="<?= $servico['preco_feriado'] ?>">
-                                            <?= htmlspecialchars($servico['nome']) ?> 
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div id="info-preco" class="preco-info"></div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="data_hora"><i class="far fa-calendar"></i> Data do Serviço:</label>
+                                <label for="data_hora"><i class="far fa-calendar"></i> Data da Consulta:</label>
                                 <input type="date" name="data_hora" id="data_hora" class="form-control" readonly required>
                                 <div id="info-data" class="horario-indisponivel"></div>
                             </div>
@@ -550,12 +533,22 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
                             </div>
 
                             <div class="form-group">
+                                <label for="veterinario_id"><i class="fas fa-user-md"></i> Veterinário:</label>
+                                <select name="veterinario_id" id="veterinario_id" class="form-control" required>
+                                    <option value="">Selecione o veterinário</option>
+                                    <?php foreach ($veterinarios as $vet): ?>
+                                        <option value="<?= $vet['id'] ?>"><?= htmlspecialchars($vet['nome']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="observacoes"><i class="far fa-sticky-note"></i> Observações (opcional):</label>
                                 <textarea name="observacoes" id="observacoes" class="form-control" rows="3"></textarea>
                             </div>
 
                             <button type="submit" class="btn btn-block" id="btn-agendar" disabled>
-                                <i class="fas fa-calendar-check"></i> Agendar Serviço
+                                <i class="fas fa-calendar-check"></i> Agendar Consulta
                             </button>
                         </form>
                     </div>
@@ -617,9 +610,6 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
                     });
                     info.dayEl.classList.add('fc-day-selected');
                     
-                    // Atualizar informações de preço
-                    atualizarInformacoesPreco();
-                    
                     // Buscar horários disponíveis para esta data
                     buscarHorariosDisponiveis(info.dateStr);
                 },
@@ -656,28 +646,6 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
                     verificarFormularioCompleto();
                 });
             });
-
-            // Atualizar informações de preço quando o serviço ou data mudar
-            function atualizarInformacoesPreco() {
-                const servicoSelect = document.getElementById('servico_id');
-                const dataInput = document.getElementById('data_hora');
-                const infoPreco = document.getElementById('info-preco');
-                
-                if (servicoSelect.value && dataInput.value) {
-                    const selectedOption = servicoSelect.options[servicoSelect.selectedIndex];
-                    const precoNormal = selectedOption.getAttribute('data-preco-normal');
-                    const precoFeriado = selectedOption.getAttribute('data-preco-feriado');
-                    
-                    // Verificar se é feriado (exemplo simples)
-                    const data = new Date(dataInput.value);
-                    const isFeriado = false; // Aqui você pode implementar a lógica de feriados
-                    
-                    const preco = isFeriado ? precoFeriado : precoNormal;
-                    infoPreco.textContent = `Preço: R$ ${parseFloat(preco).toFixed(2)}`;
-                } else {
-                    infoPreco.textContent = '';
-                }
-            }
 
             // Função para buscar horários disponíveis
             function buscarHorariosDisponiveis(data) {
@@ -727,19 +695,16 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
             // Verificar se o formulário está completo
             function verificarFormularioCompleto() {
                 const animalSelecionado = document.getElementById('animal_selecionado').value;
-                const servicoSelecionado = document.getElementById('servico_id').value;
                 const dataSelecionada = document.getElementById('data_hora').value;
                 const horaSelecionada = document.getElementById('hora_inicio').value;
+                const veterinarioSelecionado = document.getElementById('veterinario_id').value;
                 
                 const btnAgendar = document.getElementById('btn-agendar');
-                btnAgendar.disabled = !(animalSelecionado && servicoSelecionado && dataSelecionada && horaSelecionada);
+                btnAgendar.disabled = !(animalSelecionado && dataSelecionada && horaSelecionada && veterinarioSelecionado);
             }
 
-            // Verificar seleção de serviço e data
-            document.getElementById('servico_id').addEventListener('change', function() {
-                atualizarInformacoesPreco();
-                verificarFormularioCompleto();
-            });
+            // Verificar seleção de veterinário
+            document.getElementById('veterinario_id').addEventListener('change', verificarFormularioCompleto);
 
             <?php if ($tipo === 'Veterinario' || $tipo === 'Secretaria'): ?>
             function carregarSolicitacoes() {
@@ -840,5 +805,6 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
             <?php endif; ?>
         });
     </script>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

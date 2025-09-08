@@ -310,7 +310,7 @@ include 'header.php';
         .stats-grid {
             grid-template-columns: repeat(2, 1fr);
         }
-        
+
         .charts-section {
             grid-template-columns: 1fr;
         }
@@ -320,19 +320,19 @@ include 'header.php';
         .dashboard-content {
             padding: 20px;
         }
-        
+
         .stats-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .tables-section {
             grid-template-columns: 1fr;
         }
-        
+
         .search-container {
             width: 200px;
         }
-        
+
         .header {
             flex-direction: column;
             gap: 15px;
@@ -344,12 +344,12 @@ include 'header.php';
 <div class="dashboard-content">
     <div class="header">
         <h1 class="page-title">Dashboard Secretaria</h1>
-        
+
         <div class="search-container">
             <input type="text" class="input" placeholder="Pesquisar...">
             <button class="btn-search"> 🔍 </button>
         </div>
-        
+
         <div class="user-info">
             <div class="user-avatar"><?= $iniciais ?></div>
             <div>
@@ -427,29 +427,30 @@ include 'header.php';
                 <a href="#" class="see-all">Ver todos</a>
             </div>
             <ul class="agendamento-list">
-                <?php foreach($proximos_agendamentos as $agendamento): ?>
-                <li class="agendamento-item">
-                    <div class="agendamento-info">
-                        <h4><?= htmlspecialchars($agendamento['animal']) ?></h4>
-                        <p><?= htmlspecialchars($agendamento['cliente']) ?></p>
-                    </div>
-                    <div class="agendamento-time">
-                        <?= date('d/m', strtotime($agendamento['data_hora'])) ?> • <?= substr($agendamento['hora_inicio'], 0, 5) ?>
-                    </div>
-                </li>
+                <?php foreach ($proximos_agendamentos as $agendamento): ?>
+                    <li class="agendamento-item">
+                        <div class="agendamento-info">
+                            <h4><?= htmlspecialchars($agendamento['animal']) ?></h4>
+                            <p><?= htmlspecialchars($agendamento['cliente']) ?></p>
+                        </div>
+                        <div class="agendamento-time">
+                            <?= date('d/m', strtotime($agendamento['data_hora'])) ?> •
+                            <?= substr($agendamento['hora_inicio'], 0, 5) ?>
+                        </div>
+                    </li>
                 <?php endforeach; ?>
             </ul>
         </div>
         <div style="margin: 30px; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
-                        <h2>Quais animais sua clínica irá atender?</h2>
-                        <form method="POST">
-                            <label for="especies">Digite os nomes dos animais (separados por vírgula):</label><br><br>
-                            <input type="text" id="especies" name="especies" placeholder="Ex: Cachorro, Gato, Coelho"
-                                style="width: 100%; padding: 10px;" required>
-                            <br><br>
-                            <button type="submit" style="padding: 10px 20px;">Cadastrar Espécies</button>
-                        </form>
-                    </div>
+            <h2>Quais animais sua clínica irá atender?</h2>
+            <form method="POST">
+                <label for="especies">Digite os nomes dos animais (separados por vírgula):</label><br><br>
+                <input type="text" id="especies" name="especies" placeholder="Ex: Cachorro, Gato, Coelho"
+                    style="width: 100%; padding: 10px;" required>
+                <br><br>
+                <button type="submit" style="padding: 10px 20px;">Cadastrar Espécies</button>
+            </form>
+        </div>
 
         <div class="table-card">
             <div class="table-header">
@@ -486,21 +487,21 @@ include 'header.php';
     const agendamentosChart = new Chart(agendamentosCtx, {
         type: 'line',
         data: {
-            labels: [<?php 
-                $labels = [];
-                foreach($agendamentos_mes as $ag) {
-                    $labels[] = "'" . date('d/m', strtotime($ag['dia'])) . "'";
-                }
-                echo implode(', ', $labels);
+            labels: [<?php
+            $labels = [];
+            foreach ($agendamentos_mes as $ag) {
+                $labels[] = "'" . date('d/m', strtotime($ag['dia'])) . "'";
+            }
+            echo implode(', ', $labels);
             ?>],
             datasets: [{
                 label: 'Agendamentos por Dia',
-                data: [<?php 
-                    $values = [];
-                    foreach($agendamentos_mes as $ag) {
-                        $values[] = $ag['total'];
-                    }
-                    echo implode(', ', $values);
+                data: [<?php
+                $values = [];
+                foreach ($agendamentos_mes as $ag) {
+                    $values[] = $ag['total'];
+                }
+                echo implode(', ', $values);
                 ?>],
                 borderColor: '#2E8B57',
                 backgroundColor: 'rgba(46, 139, 87, 0.1)',
@@ -532,20 +533,20 @@ include 'header.php';
     const especiesChart = new Chart(especiesCtx, {
         type: 'doughnut',
         data: {
-            labels: [<?php 
-                $labels = [];
-                foreach($especies_data as $especie) {
-                    $labels[] = "'" . $especie['nome'] . "'";
-                }
-                echo implode(', ', $labels);
+            labels: [<?php
+            $labels = [];
+            foreach ($especies_data as $especie) {
+                $labels[] = "'" . $especie['nome'] . "'";
+            }
+            echo implode(', ', $labels);
             ?>],
             datasets: [{
-                data: [<?php 
-                    $values = [];
-                    foreach($especies_data as $especie) {
-                        $values[] = $especie['total'];
-                    }
-                    echo implode(', ', $values);
+                data: [<?php
+                $values = [];
+                foreach ($especies_data as $especie) {
+                    $values[] = $especie['total'];
+                }
+                echo implode(', ', $values);
                 ?>],
                 backgroundColor: [
                     '#2E8B57', '#4682B4', '#FF6B6B', '#9b59b6', '#e67e22',

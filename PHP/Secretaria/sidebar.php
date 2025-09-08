@@ -44,7 +44,7 @@ function renderSidebar() {
                 </a>
             </li>
             <li class="' . $calendario_active . '">
-                <a href="../Calendario/calendario.php">
+                <a href="calendario.php">
                     <i class="fas fa-calendar-alt"></i>
                     <span class="sidebar-menu-text">Calendário</span>
                 </a>
