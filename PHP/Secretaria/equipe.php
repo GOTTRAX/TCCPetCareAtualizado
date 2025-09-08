@@ -1,6 +1,15 @@
 <?php
-include '../conexao.php'; 
-include 'header.php';
+// =================== INICIAR SESSÃO PRIMEIRO ===================
+session_start();
+
+// Verifica se usuário está logado e é Secretaria
+if (!isset($_SESSION['id']) || $_SESSION['tipo_usuario'] !== 'Secretaria') {
+    header("Location: ../index.php");
+    exit();
+}
+
+// =================== INCLUIR CONEXÃO ===================
+include '../conexao.php';
 
 // ====== CREATE ======
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'create') {
@@ -18,9 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         move_uploaded_file($_FILES["foto"]["tmp_name"], $targetFile);
     }
 
-    $sql = "INSERT INTO equipe (nome, usuario_id, profissao, descricao, foto) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$nome, $_SESSION['id'], $profissao, $descricao, $foto]);
+    // Garantir que o usuario_id existe
+    $usuario_id = $_SESSION['id'] ?? null;
+
+    if ($usuario_id) {
+        $sql = "INSERT INTO equipe (nome, usuario_id, profissao, descricao, foto) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$nome, $usuario_id, $profissao, $descricao, $foto]);
+    }
+
     header("Location: equipe.php");
     exit;
 }
@@ -37,6 +52,12 @@ if (isset($_GET['delete'])) {
 $sql = "SELECT id, nome, profissao, descricao, foto FROM equipe";
 $stmt = $pdo->query($sql);
 $equipe = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// =================== DEFINIR TÍTULO ===================
+$paginaTitulo = "Gerenciamento de Equipe";
+
+// =================== INCLUIR HEADER ===================
+include "header.php";
 ?>
 
 <!DOCTYPE html>

@@ -1,16 +1,7 @@
 <?php
 // =================== CONEXÃO PDO ===================
-$host = "localhost";
-$db = "PetCare";
-$user = "root";
-$pass = "root";
+include "../conexao.php";
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Erro de conexão: " . $e->getMessage());
-}
 
 // =================== AÇÕES (POST) ===================
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"])) {
@@ -95,7 +86,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'detalhes' && isset($_GET['id'])) 
         $idade = $nascimento->diff($hoje)->y . " ano(s)";
     }
     ?>
-    
+
     <h4>Informações do Animal</h4>
     <div class="row">
         <div class="col-md-4">
@@ -710,8 +701,17 @@ include 'header.php';
         <tr>
             <form method="POST">
                 <td>
-                    <img src="<?= $animal['foto'] ?: 'PHP/uploads/pets/' ?>"
-                        class="animal-img" alt="<?= htmlspecialchars($animal['nome']) ?>">
+                    <?php if (!empty($animal['foto'])): ?>
+                        <img src="../uploads/pets/<?= htmlspecialchars($animal['foto']) ?>" class="animal-img"
+                            alt="<?= htmlspecialchars($animal['nome']) ?>"
+                            style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                    <?php else: ?>
+                        <!-- Placeholder quando não há foto -->
+                        <div
+                            style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 4px;">
+                            🐾
+                        </div>
+                    <?php endif; ?>
                 </td>
                 <td><?= (int) $animal['id'] ?></td>
                 <td><input type="text" name="nome" value="<?= htmlspecialchars($animal['nome']) ?>"></td>

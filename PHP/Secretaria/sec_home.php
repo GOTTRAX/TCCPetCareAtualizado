@@ -441,16 +441,7 @@ include 'header.php';
                 <?php endforeach; ?>
             </ul>
         </div>
-        <div style="margin: 30px; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
-            <h2>Quais animais sua clínica irá atender?</h2>
-            <form method="POST">
-                <label for="especies">Digite os nomes dos animais (separados por vírgula):</label><br><br>
-                <input type="text" id="especies" name="especies" placeholder="Ex: Cachorro, Gato, Coelho"
-                    style="width: 100%; padding: 10px;" required>
-                <br><br>
-                <button type="submit" style="padding: 10px 20px;">Cadastrar Espécies</button>
-            </form>
-        </div>
+        
 
         <div class="table-card">
             <div class="table-header">

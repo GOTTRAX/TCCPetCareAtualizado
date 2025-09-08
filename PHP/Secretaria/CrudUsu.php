@@ -8,8 +8,7 @@ include("../conexao.php");
 // =================== DEFINIR TÍTULO ===================
 $paginaTitulo = "Gerenciamento de Usuários";
 
-// =================== INCLUIR HEADER ===================
-include "header.php";
+
 
 // =================== AÇÕES (POST) ===================
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"])) {
@@ -203,6 +202,9 @@ $animaisData = $pdo->query("SELECT u.nome, COUNT(a.id) AS total
                             FROM Usuarios u
                             LEFT JOIN Animais a ON u.id = a.usuario_id
                             GROUP BY u.id")->fetchAll(PDO::FETCH_ASSOC);
+
+                            // =================== INCLUIR HEADER ===================
+include "header.php";
 ?>
 <style>
     /* ========== ESTILOS DA BARRA LATERAL ========== */

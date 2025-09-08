@@ -1,7 +1,5 @@
 <?php
-// PHP/Secretaria/config.php
 $paginaTitulo = "Configurações";
-include("header.php");
 include("../conexao.php"); // $pdo
 
 // ====== FLASH (mensagens de feedback) ======
@@ -106,6 +104,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             set_flash("Feriado removido.", "info");
         }
 
+        // ------- ESPÉCIES -------
+        if ($acao === 'especie_criar') {
+            $especies = explode(',', $_POST['especies']);
+            $count = 0;
+            foreach ($especies as $nome) {
+                $nome = trim($nome);
+                if (!empty($nome)) {
+                    $stmt = $pdo->prepare("INSERT INTO Especies (nome) VALUES (?)");
+                    $stmt->execute([$nome]);
+                    $count++;
+                }
+            }
+            set_flash("$count espécie(s) cadastrada(s) com sucesso!");
+        }
+        if ($acao === 'especie_atualizar') {
+            $id = intval($_POST['id']);
+            $nome = trim($_POST['nome']);
+            if (!empty($nome)) {
+                $stmt = $pdo->prepare("UPDATE Especies SET nome=? WHERE id=?");
+                $stmt->execute([$nome, $id]);
+                set_flash("Espécie atualizada!");
+            }
+        }
+        if ($acao === 'especie_excluir') {
+            $id = intval($_POST['id']);
+            $pdo->prepare("DELETE FROM Especies WHERE id=?")->execute([$id]);
+            set_flash("Espécie excluída!", "info");
+        }
+
     } catch (PDOException $e) {
         set_flash("Erro ao salvar: ".$e->getMessage(), "error");
     }
@@ -129,7 +156,10 @@ foreach ($diasPadrao as $d) {
 
 $periodos = $pdo->query("SELECT * FROM Periodos_Inativos ORDER BY data_inicio DESC")->fetchAll(PDO::FETCH_ASSOC);
 $feriados = $pdo->query("SELECT * FROM Feriados ORDER BY data")->fetchAll(PDO::FETCH_ASSOC);
+$especies = $pdo->query("SELECT * FROM Especies ORDER BY nome ASC")->fetchAll(PDO::FETCH_ASSOC);
 $flash = get_flash();
+
+include("header.php");
 ?>
 
 <style>
@@ -203,6 +233,10 @@ input:focus, textarea:focus, select:focus{ border-color: var(--pc-primary); box-
 .flash.success{ background:#e8f7ef; color:#0f5132; }
 .flash.info{ background:#e7f0ff; color:#1e3a8a; }
 .flash.error{ background:#ffecec; color:#8a1c1c; }
+
+/* Estilos para o formulário de espécies */
+.especie-form { display: flex; gap: 10px; align-items: center; }
+.especie-input { flex: 1; }
 </style>
 
 <div class="config-wrap">
@@ -213,14 +247,14 @@ input:focus, textarea:focus, select:focus{ border-color: var(--pc-primary); box-
     <?php endif; ?>
 
     <div class="tabs">
-        <button class="tab-btn active" data-tab="tab-servicos"><i class="fa fa-stethoscope"></i> Serviços</button>
-        <button class="tab-btn" data-tab="tab-dias"><i class="fa fa-calendar-day"></i> Dias trabalhados</button>
-        <button class="tab-btn" data-tab="tab-periodos"><i class="fa fa-plane-slash"></i> Períodos inativos</button>
-        <button class="tab-btn" data-tab="tab-feriados"><i class="fa fa-flag"></i> Feriados</button>
+        <button class="tab-btn active" data-tab="tab-servicos">  <i class="fa fa-stethoscope">  </i> Serviços</button>
+        <button class="tab-btn"        data-tab="tab-dias">      <i class="fa fa-calendar-day"> </i> Dias trabalhados</button>
+        <button class="tab-btn"        data-tab="tab-periodos">  <i class="fa fa-plane-slash">  </i> Períodos inativos</button>
+        <button class="tab-btn"        data-tab="tab-feriados">  <i class="fa fa-flag">         </i> Feriados</button>
+        <button class="tab-btn"        data-tab="tab-especies">  <i class="fa fa-paw">          </i> Espécies</button>
     </div>
 
     <!-- SERVIÇOS -->
-     
     <div id="tab-servicos" class="tab-content active">
         <div class="card">
             <h2><i class="fa fa-plus"></i> Novo serviço</h2>
@@ -406,6 +440,61 @@ input:focus, textarea:focus, select:focus{ border-color: var(--pc-primary); box-
                                         <input type="hidden" name="acao" value="feriado_excluir">
                                         <input type="hidden" name="id" value="<?= $f['id'] ?>">
                                         <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESPÉCIES -->
+    <div id="tab-especies" class="tab-content">
+        <div class="card">
+            <h2><i class="fa fa-plus"></i> Cadastrar Espécies</h2>
+            <form method="post">
+                <input type="hidden" name="acao" value="especie_criar">
+                <label><small>Digite os nomes dos animais (separados por vírgula):</small>
+                    <input type="text" name="especies" placeholder="Ex: Cachorro, Gato, Coelho" required>
+                </label>
+                <div style="margin-top:10px">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Cadastrar Espécies</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2><i class="fa fa-list"></i> Espécies Cadastradas</h2>
+            <div style="overflow:auto">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th style="width:180px">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if(!$especies): ?>
+                            <tr><td colspan="3">Nenhuma espécie cadastrada.</td></tr>
+                        <?php else: foreach($especies as $e): ?>
+                            <tr>
+                                <td><?= $e['id'] ?></td>
+                                <td>
+                                    <form method="post" class="especie-form">
+                                        <input type="hidden" name="acao" value="especie_atualizar">
+                                        <input type="hidden" name="id" value="<?= $e['id'] ?>">
+                                        <input type="text" name="nome" value="<?= htmlspecialchars($e['nome']) ?>" class="especie-input" required>
+                                        <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="post" onsubmit="return confirm('Excluir esta espécie?');">
+                                        <input type="hidden" name="acao" value="especie_excluir">
+                                        <input type="hidden" name="id" value="<?= $e['id'] ?>">
+                                        <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> Excluir</button>
                                     </form>
                                 </td>
                             </tr>

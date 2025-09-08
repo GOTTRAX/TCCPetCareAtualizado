@@ -2,14 +2,17 @@
 // header.php - Cabeçalho com sidebar
 $paginaTitulo = isset($paginaTitulo) ? $paginaTitulo : "Sistema PetCare";
 
-// Iniciar sessão
-session_start();
+// Iniciar sessão (só se ainda não estiver ativa)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Verificar se usuário está logado (adaptar conforme sua lógica)
 if (!isset($_SESSION["id"]) || $_SESSION["tipo_usuario"] !== "Secretaria") {
     header("Location: ../index.php");
     exit();
 }
+
 
 // =================== DETERMINAR PÁGINA ATIVA ===================
 $current_script = basename($_SERVER['PHP_SELF']);

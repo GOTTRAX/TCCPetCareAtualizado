@@ -56,9 +56,9 @@ function renderSidebar() {
                 </a>
             </li>
             <li class="' . $relatorios_active . '">
-                <a href="#">
+                <a href="teste2.php">
                     <i class="fas fa-chart-bar"></i>
-                    <span class="sidebar-menu-text">Relatórios</span>
+                    <span class="sidebar-menu-text">teste 2</span>
                 </a>
             </li>
             <li class="' . $configuracoes_active . '">

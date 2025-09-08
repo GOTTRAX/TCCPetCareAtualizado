@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include '../conexao.php';
 
 // Processar o formulário quando for enviado
@@ -154,6 +154,7 @@ $data = '2024-01-15'; // Data que você quer verificar
 $horarios_disponiveis = getHorariosDisponiveis($data, $pdo, $horarios_por_dia);
 
 // $horarios_disponiveis conterá um array com os horários disponíveis
+include "header.php";
 ?>
 
 <!DOCTYPE html>
