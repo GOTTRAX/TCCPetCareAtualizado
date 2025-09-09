@@ -1,37 +1,57 @@
 <?php
-
 include '../conexao.php';
+
+// Verificar conexão
+if (!$pdo) {
+    die("Erro: Não foi possível conectar ao banco de dados");
+}
+
+// Configurar tratamento de erros
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Processar o formulário quando for enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['salvar_horarios'])) {
-    // Limpar a tabela antes de inserir os novos dados
-    $pdo->query("DELETE FROM Dias_Trabalhados");
-    
-    // Processar cada dia da semana
-    $dias_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-    
-    foreach ($dias_semana as $dia) {
-        $ativo = isset($_POST['ativo'][$dia]) ? 1 : 0;
-        $abertura = $_POST['abertura'][$dia];
-        $fechamento = $_POST['fechamento'][$dia];
-        $tem_almoco = isset($_POST['tem_almoco'][$dia]) ? 1 : 0;
-        $almoco_inicio = $tem_almoco ? $_POST['almoco_inicio'][$dia] : NULL;
-        $almoco_fim = $tem_almoco ? $_POST['almoco_fim'][$dia] : NULL;
+    try {
+        // Limpar a tabela antes de inserir os novos dados
+        $pdo->query("DELETE FROM Dias_Trabalhados");
         
-        // Inserir no banco de dados
-        $sql = "INSERT INTO Dias_Trabalhados (dia_semana, horario_abertura, horario_fechamento, horario_almoco_inicio, horario_almoco_fim, ativo) 
-                VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$dia, $abertura, $fechamento, $almoco_inicio, $almoco_fim, $ativo]);
+        // Processar cada dia da semana
+        $dias_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        
+        foreach ($dias_semana as $dia) {
+            $ativo = isset($_POST['ativo'][$dia]) ? 1 : 0;
+            $abertura = $_POST['abertura'][$dia];
+            $fechamento = $_POST['fechamento'][$dia];
+            $tem_almoco = isset($_POST['tem_almoco'][$dia]) ? 1 : 0;
+            $almoco_inicio = $tem_almoco ? $_POST['almoco_inicio'][$dia] : NULL;
+            $almoco_fim = $tem_almoco ? $_POST['almoco_fim'][$dia] : NULL;
+            
+            // Inserir no banco de dados
+            $sql = "INSERT INTO Dias_Trabalhados (dia_semana, horario_abertura, horario_fechamento, horario_almoco_inicio, horario_almoco_fim, ativo) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$dia, $abertura, $fechamento, $almoco_inicio, $almoco_fim, $ativo]);
+        }
+        
+        $success_message = "Horários salvos com sucesso!";
+    } catch (PDOException $e) {
+        $error_message = "Erro ao salvar horários: " . $e->getMessage();
     }
-    
-    $success_message = "Horários salvos com sucesso!";
 }
 
 // Carregar configurações existentes
 $horarios_config = [];
 try {
-    $stmt = $pdo->query("SELECT * FROM Dias_Trabalhados ORDER BY FIELD(dia_semana, 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo')");
+    $stmt = $pdo->query("SELECT * FROM Dias_Trabalhados ORDER BY 
+        CASE dia_semana 
+            WHEN 'Segunda' THEN 1
+            WHEN 'Terça' THEN 2
+            WHEN 'Quarta' THEN 3
+            WHEN 'Quinta' THEN 4
+            WHEN 'Sexta' THEN 5
+            WHEN 'Sábado' THEN 6
+            WHEN 'Domingo' THEN 7
+        END");
     $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     foreach ($resultados as $row) {
@@ -83,7 +103,7 @@ function getHorariosDisponiveis($data, $pdo, $horarios_por_dia) {
     $fim = new DateTime($horario_dia['horario_fechamento']);
     
     // Verificar agendamentos existentes para esta data
-    $stmt = $pdo->prepare("SELECT hora_inicio FROM Agendamentos WHERE data_agendamento = ? AND status != 'cancelado'");
+    $stmt = $pdo->prepare("SELECT hora_inicio FROM Agendamentos WHERE data_hora = ? AND status != 'cancelado'");
     $stmt->execute([$data]);
     $agendamentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     

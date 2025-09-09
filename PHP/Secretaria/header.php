@@ -1,4 +1,5 @@
 <?php
+
 // header.php - Cabeçalho com sidebar
 $paginaTitulo = isset($paginaTitulo) ? $paginaTitulo : "Sistema PetCare";
 

@@ -1,14 +1,6 @@
 <?php
-// =================== VERIFICAÇÃO DE SESSÃO ===================
-
-
-// =================== CONEXÃO PDO ===================
 include("../conexao.php");
-
-// =================== DEFINIR TÍTULO ===================
 $paginaTitulo = "Gerenciamento de Usuários";
-
-
 
 // =================== AÇÕES (POST) ===================
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"])) {
@@ -87,6 +79,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"])) {
 
     header("Location: " . $_SERVER['PHP_SELF'] . '?' . http_build_query($_GET));
     exit;
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'];
+    $tipo = $_POST['tipo_usuario'];
+    $ativo = $_POST['ativo'];
+
+    $sql = "UPDATE Usuarios 
+            SET tipo_usuario = :tipo, ativo = :ativo, atualizado_em = NOW() 
+            WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':tipo' => $tipo,
+        ':ativo' => $ativo,
+        ':id' => $id
+    ]);
 }
 
 // =================== AJAX (GET - Relatório de Usuário) ===================
@@ -203,9 +210,10 @@ $animaisData = $pdo->query("SELECT u.nome, COUNT(a.id) AS total
                             LEFT JOIN Animais a ON u.id = a.usuario_id
                             GROUP BY u.id")->fetchAll(PDO::FETCH_ASSOC);
 
-                            // =================== INCLUIR HEADER ===================
+// =================== INCLUIR HEADER ===================
 include "header.php";
 ?>
+
 <style>
     /* ========== ESTILOS DA BARRA LATERAL ========== */
     :root {
@@ -555,6 +563,22 @@ include "header.php";
 </style>
 <!-- CONTEÚDO DO CRUD -->
 <div class="crud-container">
+    <h3>Relatórios</h3>
+    <div class="charts">
+        <div class="chart-card">
+            <h4>Distribuição por Gênero</h4>
+            <canvas id="graficoSexo" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+            <h4>Distribuição por Tipo</h4>
+            <canvas id="graficoTipos" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+            <h4>Animais por Usuário</h4>
+            <canvas id="graficoAnimais" height="200"></canvas>
+        </div>
+    </div>
+
     <!-- Formulário de Filtro -->
     <form method="GET" class="filtros">
         <input type="text" name="nome" placeholder="Nome" value="<?= htmlspecialchars($_GET['nome'] ?? '') ?>">
@@ -711,21 +735,7 @@ include "header.php";
     </div>
 
     <!-- RELATÓRIOS (GRÁFICOS) -->
-    <h3>Relatórios</h3>
-    <div class="charts">
-        <div class="chart-card">
-            <h4>Distribuição por Gênero</h4>
-            <canvas id="graficoSexo" height="200"></canvas>
-        </div>
-        <div class="chart-card">
-            <h4>Distribuição por Tipo</h4>
-            <canvas id="graficoTipos" height="200"></canvas>
-        </div>
-        <div class="chart-card">
-            <h4>Animais por Usuário</h4>
-            <canvas id="graficoAnimais" height="200"></canvas>
-        </div>
-    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -736,6 +746,8 @@ include "header.php";
     const dadosAnimais = <?= json_encode($animaisData) ?>;
 
     // ====== Gráficos ======
+
+    //Gráfico de sexo//
     if (dadosSexo.length > 0) {
         new Chart(document.getElementById('graficoSexo'), {
             type: 'pie',
@@ -743,7 +755,7 @@ include "header.php";
                 labels: dadosSexo.map(d => d.genero || 'Não informado'),
                 datasets: [{
                     data: dadosSexo.map(d => Number(d.total)),
-                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
+                    backgroundColor: ['#df4ec7ff', '#00c3ffff', '#cfcfcfff']
                 }]
             },
             options: {
@@ -756,7 +768,9 @@ include "header.php";
             }
         });
     }
+    //Gráfico de sexo//
 
+    //Gráfico de tipo de usuario//
     if (dadosTipos.length > 0) {
         new Chart(document.getElementById('graficoTipos'), {
             type: 'pie',
@@ -764,7 +778,7 @@ include "header.php";
                 labels: dadosTipos.map(d => d.tipo_usuario || 'Não informado'),
                 datasets: [{
                     data: dadosTipos.map(d => Number(d.total)),
-                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
+                    backgroundColor: ['#00c3ffff', '#41ff5bff', '#ffc400ff', '#f63e3eff']
                 }]
             },
             options: {
@@ -777,7 +791,9 @@ include "header.php";
             }
         });
     }
+    //Gráfico de tipo de usuario//
 
+    //Gráfico de animais por usuario//
     if (dadosAnimais.length > 0) {
         const sortedData = [...dadosAnimais].sort((a, b) => b.total - a.total).slice(0, 10);
 
@@ -788,7 +804,7 @@ include "header.php";
                 datasets: [{
                     label: 'Animais por Cliente',
                     data: sortedData.map(d => Number(d.total)),
-                    backgroundColor: '#4e73df'
+                    backgroundColor: '#0a7a00ff'
                 }]
             },
             options: {
@@ -813,6 +829,7 @@ include "header.php";
             }
         });
     }
+    //Gráfico de animais por usuario//
 
     // ====== Relatório (AJAX na mesma página) ======
     function abrirRelatorio(userId) {

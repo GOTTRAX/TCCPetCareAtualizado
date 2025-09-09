@@ -590,6 +590,22 @@ include 'header.php';
         }
     }
 </style>
+<!-- RELATÓRIOS (GRÁFICOS) -->
+<h3>Relatórios</h3>
+<div class="charts">
+    <div class="chart-card">
+        <canvas id="graficoSexo" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+        <canvas id="graficoEspecies" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+        <canvas id="graficoPortes" height="200"></canvas>
+    </div>
+</div>
+
+<br><br>
+
 <!-- Formulário de Filtro -->
 <form method="GET" class="filtros">
     <input type="text" name="nome" placeholder="Nome" value="<?= htmlspecialchars($_GET['nome'] ?? '') ?>">
@@ -779,19 +795,7 @@ include 'header.php';
     </div>
 </div>
 
-<!-- RELATÓRIOS (GRÁFICOS) -->
-<h3>Relatórios</h3>
-<div class="charts">
-    <div class="chart-card">
-        <canvas id="graficoSexo" height="200"></canvas>
-    </div>
-    <div class="chart-card">
-        <canvas id="graficoEspecies" height="200"></canvas>
-    </div>
-    <div class="chart-card">
-        <canvas id="graficoPortes" height="200"></canvas>
-    </div>
-</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -807,7 +811,7 @@ include 'header.php';
             labels: dadosSexo.map(d => d.sexo),
             datasets: [{
                 data: dadosSexo.map(d => Number(d.total)),
-                backgroundColor: ['#4682B4', '#2E8B57']
+                backgroundColor: ['#2d7cd6ff', '#ff74e8ff']
             }]
         },
         options: {
@@ -826,7 +830,7 @@ include 'header.php';
             labels: dadosEspecies.map(d => d.nome),
             datasets: [{
                 data: dadosEspecies.map(d => Number(d.total)),
-                backgroundColor: ['#2E8B57', '#4682B4', '#3CB371', '#20B2AA', '#48D1CC']
+                backgroundColor: ['#810606ff', '#d16a0aff', '#fbff00ff', '#20B2AA', '#48D1CC']
             }]
         },
         options: {
@@ -846,7 +850,7 @@ include 'header.php';
             datasets: [{
                 label: 'Quantidade por Porte',
                 data: dadosPortes.map(d => Number(d.total)),
-                backgroundColor: '#2E8B57'
+                backgroundColor: ['#2E8B57', '#0080ffff', '#2c3e50']
             }]
         },
         options: {

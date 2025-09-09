@@ -1,16 +1,16 @@
 <?php
 session_start();
-include("conexao.php"); // deve definir a variável $pdo (não $conn)
+include("conexao.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome       = $_POST["nome"];
-    $email      = $_POST["email"];
-    $senha      = $_POST["password"];
-    $confSenha  = $_POST["confirmPassword"];
-    $telefone   = $_POST["telefone"];
-    $datanasc   = $_POST["datanasc"];
-    $cpf        = $_POST["cpf"]; 
-    $genero     = $_POST["genero"];
+    $nome = $_POST["nome"];
+    $email = $_POST["email"];
+    $senha = $_POST["password"];
+    $confSenha = $_POST["confirmPassword"];
+    $telefone = $_POST["telefone"];
+    $datanasc = $_POST["datanasc"];
+    $cpf = $_POST["cpf"];
+    $genero = $_POST["genero"];
 
     if ($senha !== $confSenha) {
         die("As senhas não coincidem.");
@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $pdo->prepare($sql);
 
     if ($stmt->execute([$nome, $cpf, $email, $senhaHash, $telefone, $datanasc, $genero])) {
-        $_SESSION["usuario_id"] = $pdo->lastInsertId();  
+        $_SESSION["usuario_id"] = $pdo->lastInsertId();
         $_SESSION["usuario_email"] = $email;
 
         header("Location: http://localhost/bruno/TCCPetCareAtualizado/index.php");
@@ -44,17 +44,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cadastre-se na PetCare para acessar serviços veterinários exclusivos para seu pet">
+    <meta name="description"
+        content="Cadastre-se na PetCare para acessar serviços veterinários exclusivos para seu pet">
     <meta name="keywords" content="cadastro, petcare, veterinária, cuidado pet">
     <meta name="author" content="PetCare">
     <title>Cadastro - PetCare</title>
-    
+    <link rel="stylesheet" href="Estilos/login.css">
     <link rel="icon" type="image/png" href="https://img.icons8.com/ios/452/cat.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -111,8 +115,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         @keyframes backgroundFloat {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(10px, 10px); }
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(10px, 10px);
+            }
         }
 
         /* Header Styles */
@@ -187,8 +198,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         @keyframes slideInScale {
-            from { opacity: 0; transform: scale(0.95) translateY(-20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .signup-header {
@@ -282,8 +300,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-color: var(--primary-color);
         }
 
-        .input-group input:focus + i,
-        .input-group select:focus + i {
+        .input-group input:focus+i,
+        .input-group select:focus+i {
             color: var(--primary-color);
         }
 
@@ -316,10 +334,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             transition: width 0.3s ease, background 0.3s ease;
         }
 
-        .strength-weak { width: 25%; background: var(--accent-color); }
-        .strength-fair { width: 50%; background: #FBBF24; }
-        .strength-good { width: 75%; background: #10B981; }
-        .strength-strong { width: 100%; background: var(--primary-dark); }
+        .strength-weak {
+            width: 25%;
+            background: var(--accent-color);
+        }
+
+        .strength-fair {
+            width: 50%;
+            background: #FBBF24;
+        }
+
+        .strength-good {
+            width: 75%;
+            background: #10B981;
+        }
+
+        .strength-strong {
+            width: 100%;
+            background: var(--primary-dark);
+        }
 
         .password-strength-text {
             font-size: 0.75rem;
@@ -492,57 +525,131 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 0.85rem;
         }
 
-        .toast.success { background: var(--primary-color); }
-        .toast.error { background: var(--accent-color); }
-        .toast.info { background: #3B82F6; }
+        .toast.success {
+            background: var(--primary-color);
+        }
+
+        .toast.error {
+            background: var(--accent-color);
+        }
+
+        .toast.info {
+            background: #3B82F6;
+        }
 
         @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(100%); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         @keyframes slideOutRight {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(100%); }
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .header { padding: 0.6rem 1rem; }
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 0.6rem 1rem;
+            }
+
             .signup-container {
                 padding: 1.2rem 0.8rem;
                 margin-top: 60px;
                 max-width: 100%;
             }
-            .signup-header h1 { font-size: 1.3rem; }
-            .signup-header p { font-size: 0.8rem; }
+
+            .signup-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .signup-header p {
+                font-size: 0.8rem;
+            }
+
             .field-pair {
                 grid-template-columns: 1fr;
                 gap: 0.6rem;
             }
+
             .input-group input,
-            .input-group select { font-size: 0.8rem; padding: 0.5rem 0.5rem 0.5rem 28px; }
-            .input-group i { font-size: 0.8rem; left: 8px; }
-            .input-group select { background-position: right 8px center; background-size: 9px; }
-            .signup-btn, .google-signup-btn { font-size: 0.85rem; padding: 0.6rem; }
+            .input-group select {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.5rem 0.5rem 28px;
+            }
+
+            .input-group i {
+                font-size: 0.8rem;
+                left: 8px;
+            }
+
+            .input-group select {
+                background-position: right 8px center;
+                background-size: 9px;
+            }
+
+            .signup-btn,
+            .google-signup-btn {
+                font-size: 0.85rem;
+                padding: 0.6rem;
+            }
         }
 
         @media (max-width: 480px) {
-            .signup-container { padding: 1rem 0.6rem; }
-            .signup-header h1 { font-size: 1.2rem; }
-            .signup-header p { font-size: 0.75rem; }
+            .signup-container {
+                padding: 1rem 0.6rem;
+            }
+
+            .signup-header h1 {
+                font-size: 1.2rem;
+            }
+
+            .signup-header p {
+                font-size: 0.75rem;
+            }
+
             .input-group input,
-            .input-group select { font-size: 0.75rem; padding: 0.4rem 0.4rem 0.4rem 24px; }
-            .input-group i { font-size: 0.75rem; }
-            .signup-btn, .google-signup-btn { font-size: 0.8rem; padding: 0.5rem; }
+            .input-group select {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.4rem 0.4rem 24px;
+            }
+
+            .input-group i {
+                font-size: 0.75rem;
+            }
+
+            .signup-btn,
+            .google-signup-btn {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
         }
     </style>
 </head>
+
 <body>
     <header class="header" role="banner">
         <a href="/PetCare/" class="logo" aria-label="PetCare Home">
-            <img src="https://st2.depositphotos.com/5056293/9389/v/450/depositphotos_93899252-stock-illustration-vector-sign-veterinary.jpg" alt="PetCare Logo" class="logo-img" loading="lazy">
+            <img src="https://st2.depositphotos.com/5056293/9389/v/450/depositphotos_93899252-stock-illustration-vector-sign-veterinary.jpg"
+                alt="PetCare Logo" class="logo-img" loading="lazy">
             PetCare
         </a>
         <a href="/PetCare/" class="back-btn" aria-label="Voltar à página inicial">
@@ -565,13 +672,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="field-pair">
                     <div class="input-group">
                         <label for="nome">Nome Completo</label>
-                        <input type="text" id="nome" name="nome" placeholder="Digite seu nome" value="<?php echo isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : ''; ?>" required>
+                        <input type="text" id="nome" name="nome" placeholder="Digite seu nome"
+                            value="<?php echo isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : ''; ?>"
+                            required>
                         <i class="fas fa-user"></i>
                         <span class="error-message" id="nome-error">Por favor, insira seu nome</span>
                     </div>
                     <div class="input-group">
                         <label for="email">E-mail</label>
-                        <input type="email" id="email" name="email" placeholder="seu@email.com" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com"
+                            value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
+                            required>
                         <i class="fas fa-envelope"></i>
                         <span class="error-message" id="email-error">Por favor, insira um e-mail válido</span>
                     </div>
@@ -579,13 +690,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="field-pair">
                     <div class="input-group">
                         <label for="telefone">Telefone</label>
-                        <input type="tel" id="telefone" name="telefone" placeholder="(xx) xxxxx-xxxx" value="<?php echo isset($_POST['telefone']) ? htmlspecialchars($_POST['telefone']) : ''; ?>" required maxlength="15">
+                        <input type="tel" id="telefone" name="telefone" placeholder="(xx) xxxxx-xxxx"
+                            value="<?php echo isset($_POST['telefone']) ? htmlspecialchars($_POST['telefone']) : ''; ?>"
+                            required maxlength="15">
                         <i class="fas fa-phone"></i>
                         <span class="error-message" id="telefone-error">Por favor, insira um telefone válido</span>
                     </div>
                     <div class="input-group">
                         <label for="cpf">CPF</label>
-                        <input type="text" id="cpf" name="cpf" placeholder="xxx.xxx.xxx-xx" value="<?php echo isset($_POST['cpf']) ? htmlspecialchars($_POST['cpf']) : ''; ?>" required maxlength="14">
+                        <input type="text" id="cpf" name="cpf" placeholder="xxx.xxx.xxx-xx"
+                            value="<?php echo isset($_POST['cpf']) ? htmlspecialchars($_POST['cpf']) : ''; ?>" required
+                            maxlength="14">
                         <i class="fas fa-id-card"></i>
                         <span class="error-message" id="cpf-error">Por favor, insira um CPF válido</span>
                     </div>
@@ -593,14 +708,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="field-pair">
                     <div class="input-group">
                         <label for="datanasc">Data de Nascimento</label>
-                        <input type="date" id="datanasc" name="datanasc" value="<?php echo isset($_POST['datanasc']) ? htmlspecialchars($_POST['datanasc']) : ''; ?>" required>
+                        <input type="date" id="datanasc" name="datanasc"
+                            value="<?php echo isset($_POST['datanasc']) ? htmlspecialchars($_POST['datanasc']) : ''; ?>"
+                            required>
                         <i class="fas fa-calendar-alt"></i>
                         <span class="error-message" id="datanasc-error">Por favor, insira uma data válida</span>
                     </div>
                     <div class="input-group">
                         <label for="genero">Gênero</label>
                         <select id="genero" name="genero" required>
-                            <option value="" disabled <?php echo !isset($_POST['genero']) ? 'selected' : ''; ?>>Selecione</option>
+                            <option value="" disabled <?php echo !isset($_POST['genero']) ? 'selected' : ''; ?>>
+                                Selecione</option>
                             <option value="Masculino" <?php echo isset($_POST['genero']) && $_POST['genero'] === 'Masculino' ? 'selected' : ''; ?>>Masculino</option>
                             <option value="Feminino" <?php echo isset($_POST['genero']) && $_POST['genero'] === 'Feminino' ? 'selected' : ''; ?>>Feminino</option>
                             <option value="Outro" <?php echo isset($_POST['genero']) && $_POST['genero'] === 'Outro' ? 'selected' : ''; ?>>Outro</option>
@@ -622,9 +740,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="input-group password-group">
                     <label for="confirmPassword">Confirmar Senha</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme sua senha" required>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme sua senha"
+                        required>
                     <i class="fas fa-lock"></i>
-                    <span class="toggle-password" onclick="toggleSenha('confirmPassword')"><i class="fas fa-eye"></i></span>
+                    <span class="toggle-password" onclick="toggleSenha('confirmPassword')"><i
+                            class="fas fa-eye"></i></span>
                     <span class="error-message" id="confirmPassword-error">As senhas não coincidem</span>
                 </div>
             </div>
@@ -648,308 +768,359 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             Já tem uma conta? <a href="../index.php" id="loginLink">Faça login aqui</a>
         </div>
     </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('signupForm');
+        const inputs = form.querySelectorAll('input, select');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const cpfInput = document.getElementById('cpf');
+        const telefoneInput = document.getElementById('telefone');
+        const emailInput = document.getElementById('email');
+        const datanascInput = document.getElementById('datanasc');
+        const generoInput = document.getElementById('genero');
+        const googleSignupBtn = document.getElementById('googleSignup');
 
-    <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('signupForm');
-    const inputs = form.querySelectorAll('input, select');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-    const cpfInput = document.getElementById('cpf');
-    const telefoneInput = document.getElementById('telefone');
-    const emailInput = document.getElementById('email');
-    const datanascInput = document.getElementById('datanasc');
-    const generoInput = document.getElementById('genero');
-    const googleSignupBtn = document.getElementById('googleSignup');
-
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.style.animation = 'slideOutRight 0.3s ease forwards';
-            setTimeout(() => toast.remove(), 300);
-        }, 4000);
-    }
-
-    function formatCPF(value) {
-        value = value.replace(/\D/g, '');
-        if (value.length > 11) value = value.slice(0, 11);
-        return value
-            .replace(/(\d{3})(\d)/, '$1.$2')
-            .replace(/(\d{3})(\d)/, '$1.$2')
-            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    }
-
-    function formatTelefone(value) {
-        value = value.replace(/\D/g, '');
-        if (value.length > 11) value = value.slice(0, 11);
-        if (value.length <= 2) {
-            return value;
-        } else if (value.length <= 7) {
-            return `(${value.slice(0, 2)}) ${value.slice(2)}`;
-        } else {
-            return `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+        // Definir "Outro" como padrão para o gênero
+        if (generoInput) {
+            generoInput.value = 'Outro';
         }
-    }
 
-    function isValidCPF(cpf) {
-        cpf = cpf.replace(/\D/g, '');
-        if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
-        let sum = 0;
-        let remainder;
-        for (let i = 1; i <= 9; i++) {
-            sum += parseInt(cpf[i - 1]) * (11 - i);
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
         }
-        remainder = (sum * 10) % 11;
-        if (remainder === 10 || remainder === 11) remainder = 0;
-        if (remainder !== parseInt(cpf[9])) return false;
-        sum = 0;
-        for (let i = 1; i <= 10; i++) {
-            sum += parseInt(cpf[i - 1]) * (12 - i);
-        }
-        remainder = (sum * 10) % 11;
-        if (remainder === 10 || remainder === 11) remainder = 0;
-        if (remainder !== parseInt(cpf[10])) return false;
-        return true;
-    }
-
-    function isValidEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function isValidTelefone(telefone) {
-        return /^\(\d{2}\)\s\d{5}-\d{4}$/.test(telefone);
-    }
-
-    function isValidDate(date) {
-        const today = new Date();
-        const inputDate = new Date(date);
-        return inputDate <= today && inputDate.getFullYear() >= 1900;
-    }
-
-    function isValidGenero(genero) {
-        return ['Masculino', 'Feminino', 'Outro'].includes(genero);
-    }
-
-    cpfInput.addEventListener('input', function () {
-        const inputGroup = this.parentElement;
-        this.value = formatCPF(this.value);
-        if (this.value.length === 14) {
-            if (isValidCPF(this.value)) {
-                inputGroup.classList.remove('invalid');
-                inputGroup.classList.add('valid');
-            } else {
-                inputGroup.classList.remove('valid');
-                inputGroup.classList.add('invalid');
-            }
-        } else {
-            inputGroup.classList.remove('valid', 'invalid');
-        }
-    });
-
-    telefoneInput.addEventListener('input', function () {
-        const inputGroup = this.parentElement;
-        const cursorPosition = this.selectionStart;
-        const oldValue = this.value;
-        const oldLength = oldValue.length;
-        this.value = formatTelefone(this.value);
         
-        let newCursorPosition = cursorPosition;
-        const newValue = this.value;
-        const nonDigitCountBefore = (oldValue.slice(0, cursorPosition).match(/\D/g) || []).length;
-        const nonDigitCountAfter = (newValue.slice(0, cursorPosition).match(/\D/g) || []).length;
-        newCursorPosition += nonDigitCountAfter - nonDigitCountBefore;
-        if (newValue.length > oldLength && /[(-)]/.test(newValue[cursorPosition - 1])) {
-            newCursorPosition++;
+        //formatar cpf
+        function formatCPF(value) {
+            value = value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            return value
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
         }
-        if (newCursorPosition >= 0 && newCursorPosition <= newValue.length) {
-            this.setSelectionRange(newCursorPosition, newCursorPosition);
-        }
-
-        if (this.value.length === 15) {
-            if (isValidTelefone(this.value)) {
-                inputGroup.classList.remove('invalid');
-                inputGroup.classList.add('valid');
+        
+        //formatar telefone
+        function formatTelefone(value) {
+            value = value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            if (value.length <= 2) {
+                return value;
+            } else if (value.length <= 7) {
+                return `(${value.slice(0, 2)}) ${value.slice(2)}`;
             } else {
-                inputGroup.classList.remove('valid');
-                inputGroup.classList.add('invalid');
+                return `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
             }
-        } else {
-            inputGroup.classList.remove('valid', 'invalid');
         }
-    });
-
-    generoInput.addEventListener('change', function () {
-        const inputGroup = this.parentElement;
-        if (isValidGenero(this.value)) {
-            inputGroup.classList.remove('invalid');
-            inputGroup.classList.add('valid');
-        } else {
-            inputGroup.classList.remove('valid');
-            inputGroup.classList.add('invalid');
-        }
-    });
-
-    function checkPasswordStrength(password) {
-        const strengthBar = document.querySelector('.password-strength-fill');
-        const strengthText = document.querySelector('.password-strength-text');
-        const strengthContainer = document.querySelector('.password-strength');
-
-        if (password.length > 0) {
-            strengthContainer.style.display = 'block';
-        } else {
-            strengthContainer.style.display = 'none';
-            return;
+        
+        //valida cpf
+        function isValidCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+            let sum = 0;
+            let remainder;
+            for (let i = 1; i <= 9; i++) {
+                sum += parseInt(cpf[i - 1]) * (11 - i);
+            }
+            remainder = (sum * 10) % 11;
+            if (remainder === 10 || remainder === 11) remainder = 0;
+            if (remainder !== parseInt(cpf[9])) return false;
+            sum = 0;
+            for (let i = 1; i <= 10; i++) {
+                sum += parseInt(cpf[i - 1]) * (12 - i);
+            }
+            remainder = (sum * 10) % 11;
+            if (remainder === 10 || remainder === 11) remainder = 0;
+            if (remainder !== parseInt(cpf[10])) return false;
+            return true;
         }
 
-        let strength = 0;
-        let feedback = '';
-        if (password.length >= 8) strength += 1;
-        if (/[a-z]/.test(password)) strength += 1;
-        if (/[A-Z]/.test(password)) strength += 1;
-        if (/[0-9]/.test(password)) strength += 1;
-        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-
-        strengthBar.className = 'password-strength-fill';
-        switch (strength) {
-            case 0:
-            case 1:
-                strengthBar.classList.add('strength-weak');
-                feedback = 'Senha muito fraca';
-                break;
-            case 2:
-                strengthBar.classList.add('strength-fair');
-                feedback = 'Senha fraca';
-                break;
-            case 3:
-                strengthBar.classList.add('strength-good');
-                feedback = 'Senha boa';
-                break;
-            case 4:
-            case 5:
-                strengthBar.classList.add('strength-strong');
-                feedback = 'Senha forte';
-                break;
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
-        strengthText.textContent = feedback;
-    }
 
-    window.toggleSenha = function (id) {
-        const input = document.getElementById(id);
-        const icon = input.nextElementSibling.querySelector('i');
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            input.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
+        function isValidTelefone(telefone) {
+            // Aceita telefone vazio (não obrigatório)
+            if (!telefone) return true;
+            return /^\(\d{2}\)\s\d{5}-\d{4}$/.test(telefone);
         }
-    };
 
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        let isValid = true;
+        function isValidDate(date) {
+            // Aceita data vazia (não obrigatória)
+            if (!date) return true;
+            const today = new Date();
+            const inputDate = new Date(date);
+            return inputDate <= today && inputDate.getFullYear() >= 1900;
+        }
 
-        inputs.forEach(input => {
-            const inputGroup = input.parentElement;
-            if (!input.value && input.required) {
-                inputGroup.classList.add('invalid');
-                isValid = false;
-            } else {
-                inputGroup.classList.remove('invalid');
-                if (input.id === 'cpf' && !isValidCPF(input.value)) {
-                    inputGroup.classList.add('invalid');
-                    isValid = false;
-                } else if (input.id === 'email' && !isValidEmail(input.value)) {
-                    inputGroup.classList.add('invalid');
-                    isValid = false;
-                } else if (input.id === 'telefone' && !isValidTelefone(input.value)) {
-                    inputGroup.classList.add('invalid');
-                    isValid = false;
-                } else if (input.id === 'datanasc' && !isValidDate(input.value)) {
-                    inputGroup.classList.add('invalid');
-                    isValid = false;
-                } else if (input.id === 'genero' && !isValidGenero(input.value)) {
-                    inputGroup.classList.add('invalid');
-                    isValid = false;
-                } else {
+        function isValidGenero(genero) {
+            return ['Masculino', 'Feminino', 'Outro'].includes(genero);
+        }
+
+        cpfInput.addEventListener('input', function () {
+            const inputGroup = this.parentElement;
+            this.value = formatCPF(this.value);
+            if (this.value.length === 14) {
+                if (isValidCPF(this.value)) {
+                    inputGroup.classList.remove('invalid');
                     inputGroup.classList.add('valid');
+                } else {
+                    inputGroup.classList.remove('valid');
+                    inputGroup.classList.add('invalid');
                 }
+            } else {
+                inputGroup.classList.remove('valid', 'invalid');
             }
         });
 
-        if (passwordInput.value !== confirmPasswordInput.value) {
-            confirmPasswordInput.parentElement.classList.add('invalid');
-            isValid = false;
-        } else if (passwordInput.value) {
-            confirmPasswordInput.parentElement.classList.add('valid');
+        telefoneInput.addEventListener('input', function () {
+            const inputGroup = this.parentElement;
+            const cursorPosition = this.selectionStart;
+            const oldValue = this.value;
+            const oldLength = oldValue.length;
+            this.value = formatTelefone(this.value);
+
+            let newCursorPosition = cursorPosition;
+            const newValue = this.value;
+            const nonDigitCountBefore = (oldValue.slice(0, cursorPosition).match(/\D/g) || []).length;
+            const nonDigitCountAfter = (newValue.slice(0, cursorPosition).match(/\D/g) || []).length;
+            newCursorPosition += nonDigitCountAfter - nonDigitCountBefore;
+            if (newValue.length > oldLength && /[(-)]/.test(newValue[cursorPosition - 1])) {
+                newCursorPosition++;
+            }
+            if (newCursorPosition >= 0 && newCursorPosition <= newValue.length) {
+                this.setSelectionRange(newCursorPosition, newCursorPosition);
+            }
+
+            // Telefone não é obrigatório, então apenas valida se preenchido
+            if (this.value.length > 0) {
+                if (this.value.length === 15) {
+                    if (isValidTelefone(this.value)) {
+                        inputGroup.classList.remove('invalid');
+                        inputGroup.classList.add('valid');
+                    } else {
+                        inputGroup.classList.remove('valid');
+                        inputGroup.classList.add('invalid');
+                    }
+                } else {
+                    inputGroup.classList.remove('valid', 'invalid');
+                }
+            } else {
+                inputGroup.classList.remove('valid', 'invalid');
+            }
+        });
+
+        generoInput.addEventListener('change', function () {
+            const inputGroup = this.parentElement;
+            if (isValidGenero(this.value)) {
+                inputGroup.classList.remove('invalid');
+                inputGroup.classList.add('valid');
+            } else {
+                inputGroup.classList.remove('valid');
+                inputGroup.classList.add('invalid');
+            }
+        });
+
+        function checkPasswordStrength(password) {
+            const strengthBar = document.querySelector('.password-strength-fill');
+            const strengthText = document.querySelector('.password-strength-text');
+            const strengthContainer = document.querySelector('.password-strength');
+
+            if (password.length > 0) {
+                strengthContainer.style.display = 'block';
+            } else {
+                strengthContainer.style.display = 'none';
+                return;
+            }
+
+            let strength = 0;
+            let feedback = '';
+            let suggestion = '';
+            
+            if (password.length >= 8) strength += 1;
+            else suggestion += '• Use pelo menos 8 caracteres\n';
+            
+            if (/[a-z]/.test(password)) strength += 1;
+            else suggestion += '• Adicione letras minúsculas\n';
+            
+            if (/[A-Z]/.test(password)) strength += 1;
+            else suggestion += '• Adicione letras maiúsculas\n';
+            
+            if (/[0-9]/.test(password)) strength += 1;
+            else suggestion += '• Adicione números\n';
+            
+            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+            else suggestion += '• Adicione caracteres especiais\n';
+
+            strengthBar.className = 'password-strength-fill';
+            switch (strength) {
+                case 0:
+                case 1:
+                    strengthBar.classList.add('strength-weak');
+                    feedback = 'Senha muito fraca';
+                    break;
+                case 2:
+                    strengthBar.classList.add('strength-fair');
+                    feedback = 'Senha fraca';
+                    break;
+                case 3:
+                    strengthBar.classList.add('strength-good');
+                    feedback = 'Senha boa';
+                    break;
+                case 4:
+                case 5:
+                    strengthBar.classList.add('strength-strong');
+                    feedback = 'Senha forte';
+                    break;
+            }
+            
+            // Adiciona sugestões se a senha não for forte
+            if (strength < 4 && password.length > 0) {
+                feedback += ' (sugerimos melhorar)';
+                strengthText.setAttribute('title', 'Sugestões para melhorar:\n' + suggestion);
+            } else {
+                strengthText.removeAttribute('title');
+            }
+            
+            strengthText.textContent = feedback;
         }
 
-        if (isValid) {
-            const submitBtn = this.querySelector('.signup-btn');
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cadastrando...';
-            submitBtn.disabled = true;
-            this.submit();
-        } else {
-            showToast('Por favor, corrija os erros no formulário', 'error');
-        }
-    });
+        window.toggleSenha = function (id) {
+            const input = document.getElementById(id);
+            const icon = input.nextElementSibling.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        };
 
-    passwordInput.addEventListener('input', function () {
-        checkPasswordStrength(this.value);
-        if (this.value === confirmPasswordInput.value && this.value) {
-            confirmPasswordInput.parentElement.classList.remove('invalid');
-            confirmPasswordInput.parentElement.classList.add('valid');
-        } else if (confirmPasswordInput.value) {
-            confirmPasswordInput.parentElement.classList.add('invalid');
-        }
-    });
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            let isValid = true;
 
-    confirmPasswordInput.addEventListener('input', function () {
-        if (this.value === passwordInput.value && this.value) {
-            this.parentElement.classList.remove('invalid');
-            this.parentElement.classList.add('valid');
-        } else {
-            this.parentElement.classList.add('invalid');
-        }
-    });
+            inputs.forEach(input => {
+                const inputGroup = input.parentElement;
+                
+                // Remove validações anteriores
+                inputGroup.classList.remove('invalid', 'valid');
+                
+                // Apenas valida campos obrigatórios
+                if (input.required && !input.value) {
+                    inputGroup.classList.add('invalid');
+                    isValid = false;
+                } else if (input.value) {
+                    // Valida campos que têm valor, mesmo que não obrigatórios
+                    if (input.id === 'cpf' && !isValidCPF(input.value)) {
+                        inputGroup.classList.add('invalid');
+                        isValid = false;
+                    } else if (input.id === 'email' && !isValidEmail(input.value)) {
+                        inputGroup.classList.add('invalid');
+                        isValid = false;
+                    } else if (input.id === 'telefone' && !isValidTelefone(input.value)) {
+                        inputGroup.classList.add('invalid');
+                        isValid = false;
+                    } else if (input.id === 'datanasc' && !isValidDate(input.value)) {
+                        inputGroup.classList.add('invalid');
+                        isValid = false;
+                    } else if (input.id === 'genero' && !isValidGenero(input.value)) {
+                        inputGroup.classList.add('invalid');
+                        isValid = false;
+                    } else {
+                        inputGroup.classList.add('valid');
+                    }
+                }
+            });
 
-    emailInput.addEventListener('input', function () {
-        const inputGroup = this.parentElement;
-        if (isValidEmail(this.value)) {
-            inputGroup.classList.remove('invalid');
-            inputGroup.classList.add('valid');
-        } else {
-            inputGroup.classList.remove('valid');
-            if (this.value) inputGroup.classList.add('invalid');
-        }
-    });
+            // Verifica se as senhas coincidem (apenas se ambas foram preenchidas)
+            if (passwordInput.value !== confirmPasswordInput.value && 
+                (passwordInput.value || confirmPasswordInput.value)) {
+                confirmPasswordInput.parentElement.classList.add('invalid');
+                isValid = false;
+            } else if (passwordInput.value && confirmPasswordInput.value) {
+                confirmPasswordInput.parentElement.classList.add('valid');
+            }
 
-    datanascInput.addEventListener('input', function () {
-        const inputGroup = this.parentElement;
-        if (isValidDate(this.value)) {
-            inputGroup.classList.remove('invalid');
-            inputGroup.classList.add('valid');
-        } else {
-            inputGroup.classList.remove('valid');
-            if (this.value) inputGroup.classList.add('invalid');
-        }
-    });
+            if (isValid) {
+                const submitBtn = this.querySelector('.signup-btn');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cadastrando...';
+                submitBtn.disabled = true;
+                this.submit();
+            } else {
+                showToast('Por favor, corrija os erros no formulário', 'error');
+            }
+        });
 
-    googleSignupBtn.addEventListener('click', function () {
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando...';
-        this.disabled = true;
-        setTimeout(() => {
-            showToast('Cadastro com Google será implementado em breve!', 'info');
-            this.innerHTML = '<img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo"> Cadastrar com Google';
-            this.disabled = false;
-        }, 1500);
+        passwordInput.addEventListener('input', function () {
+            checkPasswordStrength(this.value);
+            if (this.value === confirmPasswordInput.value && this.value) {
+                confirmPasswordInput.parentElement.classList.remove('invalid');
+                confirmPasswordInput.parentElement.classList.add('valid');
+            } else if (confirmPasswordInput.value) {
+                confirmPasswordInput.parentElement.classList.add('invalid');
+            }
+        });
+
+        confirmPasswordInput.addEventListener('input', function () {
+            if (this.value === passwordInput.value && this.value) {
+                this.parentElement.classList.remove('invalid');
+                this.parentElement.classList.add('valid');
+            } else if (this.value) {
+                this.parentElement.classList.add('invalid');
+            } else {
+                this.parentElement.classList.remove('invalid', 'valid');
+            }
+        });
+
+        emailInput.addEventListener('input', function () {
+            const inputGroup = this.parentElement;
+            if (isValidEmail(this.value)) {
+                inputGroup.classList.remove('invalid');
+                inputGroup.classList.add('valid');
+            } else {
+                inputGroup.classList.remove('valid');
+                if (this.value) inputGroup.classList.add('invalid');
+            }
+        });
+
+        datanascInput.addEventListener('input', function () {
+            const inputGroup = this.parentElement;
+            // Data não é obrigatória, então apenas valida se preenchida
+            if (this.value) {
+                if (isValidDate(this.value)) {
+                    inputGroup.classList.remove('invalid');
+                    inputGroup.classList.add('valid');
+                } else {
+                    inputGroup.classList.remove('valid');
+                    inputGroup.classList.add('invalid');
+                }
+            } else {
+                inputGroup.classList.remove('valid', 'invalid');
+            }
+        });
+
+        googleSignupBtn.addEventListener('click', function () {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando...';
+            this.disabled = true;
+            setTimeout(() => {
+                showToast('Cadastro com Google será implementado em breve!', 'info');
+                this.innerHTML = '<img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo"> Cadastrar com Google';
+                this.disabled = false;
+            }, 1500);
+        });
     });
-});
 </script>
 </body>
+
 </html>
