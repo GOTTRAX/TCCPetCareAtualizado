@@ -4,7 +4,7 @@ session_start();
 ob_start(); // Inicia o buffer de saída para redirecionamentos funcionarem corretamente
 include("PHP/conexao.php"); // conexão PDO como $pdo
 
-// Inicializa variáveis de mensagem 1
+// Inicializa variáveis de mensagem
 $erro = '';
 $sucesso = '';
 
